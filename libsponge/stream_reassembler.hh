@@ -5,9 +5,21 @@
 
 #include <cstdint>
 #include <string>
-
+#include <set>
 //! \brief A class that assembles a series of excerpts from a byte stream (possibly out of order,
 //! possibly overlapping) into an in-order byte stream.
+struct byte_segment{
+  uint64_t head;
+  std::string data;
+  bool operator<(const struct byte_segment & right)const   
+    {
+      if(this->data == right.data && this->head == right.head)     
+        return false;
+      else {   
+        return this->head >= right.head;     
+      }
+    }
+};
 class StreamReassembler {
   private:
     // Your code here -- add private members as necessary.
@@ -19,6 +31,11 @@ class StreamReassembler {
     //! \brief Construct a `StreamReassembler` that will store up to `capacity` bytes.
     //! \note This capacity limits both the bytes that have been reassembled,
     //! and those that have not yet been reassembled.
+    bool _eof{false};
+    size_t not_assembled{0};
+    size_t next_send{0};
+    
+    std::set<struct byte_segment> wait_for_process{};
     StreamReassembler(const size_t capacity);
 
     //! \brief Receive a substring and write any newly contiguous bytes into the stream.

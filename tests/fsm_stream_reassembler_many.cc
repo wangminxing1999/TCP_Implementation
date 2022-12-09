@@ -46,7 +46,7 @@ int main() {
                 string dd(d.cbegin() + off, d.cbegin() + off + sz);
                 buf.push_substring(move(dd), off, off + sz == offset);
             }
-
+	    printf("%ld %ld\n", buf.stream_out().bytes_written(), offset);
             auto result = read(buf);
             if (buf.stream_out().bytes_written() != offset) {  // read bytes
                 throw runtime_error("test 1 - number of bytes RX is incorrect");
